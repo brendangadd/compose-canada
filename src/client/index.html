@@ -1,0 +1,275 @@
+<!doctype html>
+<html>
+   <head>
+      <title>Sounds</title>
+   </head>
+   <body>
+      <canvas id="canvas" width="1000" height="1000"></canvas>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"></script>
+      <script src="teoria.js"></script>
+      <script src="async.js"></script>
+      <script>
+
+function getScore() {
+   var rule30 = {
+      '111': 0,
+      '110': 0,
+      '101': 0,
+      '100': 1,
+      '011': 1,
+      '010': 1,
+      '001': 1,
+      '000': 0
+   };
+   var rule110 = {
+      '111': 0,
+      '110': 1,
+      '101': 1,
+      '100': 0,
+      '011': 1,
+      '010': 1,
+      '001': 1,
+      '000': 0
+   };
+   var a = [];
+   var row = [];
+   for (var i = 0; i < 99; i++) {
+      row.push(Math.random() > 0.5 ? 1 : 0);
+   }
+   a.push(row);
+   for (var i = 1; i < 99; i++) {
+      var row = [];
+      for (var j = 0; j < 99; j++) {
+         var im = i - 1;
+         var jm = j - 1;
+         var jp = j + 1;
+         row.push(rule110['' + a[im][jm < 0 ? 0 : jm] + a[im][j] + a[im][jp > 98 ? 90 : jp]]);
+      }
+      a.push(row);
+   }
+   var ctx = document.querySelector('#canvas').getContext('2d');
+   for (var i = 0; i < 99; i++) {
+      for (var j = 0; j < 99; j++) {
+         if (a[i][j] === 1) {
+            ctx.fillStyle = (j > 62 || j < 39 ? '#000' : '#090');
+            ctx.fillRect(i * 10 + 1, j * 10 + 1, 10, 10);
+         }
+      }
+   }
+   return a;
+}
+
+function playMusic() {
+   var SPEED = 1.6;
+   var score = getScore();
+   var baseNote = teoria.note('e4');
+   var scale = baseNote.scale('minorpentatonic');
+   var currentTime = audioContext.currentTime;
+
+   for (var i = 0; i < score.length; i++) {
+      var noteNums = getNoteNumbers(score[i], 39, 57);
+      var notes = numbersToNotes(noteNums, scale.notes());
+      var buffers = notesToBuffers(notes);
+
+      for (var j = 0; j < buffers.length; j++) {
+         var buffer = buffers[j];
+         if (buffer == null) continue;
+         playSound(buffer, currentTime + i / SPEED + (1 / SPEED * j / buffers.length));
+      }
+
+      if (i % 4 == 0 && noteNums.length > 0) {
+         var scaleIdx = noteNums[0];
+         if (scaleIdx >= 4) {
+            scaleIdx = 4;
+         } else if (scaleIdx >= 2) {
+            scaleIdx = 3;
+         } else {
+            scaleIdx = 0;
+         }
+
+         var note = baseNote.interval(scale.scale[scaleIdx]);
+         console.log(note.toString());
+         if (note != null) {
+            var baseH = teoria.note(note.name() + (note.octave() - 1));
+            var baseL = teoria.note(note.name() + (note.octave() - 2));
+            notesToBuffers([baseL, baseH]).forEach(function(buffer) {
+               playSound(buffer, currentTime + i / SPEED);
+            });
+         }
+      }
+   }
+}
+
+function numbersToNotes(numbers, scale) {
+   return numbers.map(function(num) {
+      return scale[num] || null;
+   });
+}
+
+function notesToBuffers(notes) {
+   return notes.map(deSharp).map(function(note) {
+      return note == null ? null : audioBuffers[note.toString()];
+   });
+}
+
+function playMusicz() {
+
+   var score = getScore();
+   var scale = teoria.note('c3').scale('majorpentatonic').notes();
+   var currentTime = audioContext.currentTime;
+
+   var basillator = audioContext.createOscillator();
+   basillator.connect(gain);
+   basillator.frequency.value = scale[0].fq();
+   basillator.start(currentTime);
+   basillator.stop(currentTime + score.length / 3);
+
+   for (var i = 0; i < score.length; i++) {
+      var noteNums = getNotes(score[i], 39, 62);
+      console.log(noteNums);
+
+      // var baseNote = deSharp(scale[noteNums[0] % scale.length]);
+      // baseNote = teoria.note(baseNote.name() + (baseNote.octave() - 1));
+      // var baseBuff = audioBuffers[baseNote.toString()];
+      // playSound(baseBuff, currentTime + i / 3);
+
+      for (var j = 0; j < noteNums.length; j++) {
+         var notes = [];
+         var noteNum = noteNums[j];
+         notes.push(deSharp(scale[noteNum % scale.length]));
+         for (var k = 1; ; k++) {
+            if (noteNums[j + k] === noteNum) {
+               notes.push(deSharp(scale[(noteNum + k) % scale.length]));
+            } else {
+               break;
+            }
+         }
+         j += k - 1;
+         for (var k = 0; k < notes.length; k++) {
+            var buffer = audioBuffers[notes[k].toString()];
+            //playSound(buffer, currentTime + i / 3 + i / 3 / notes.length);
+            playSound(buffer, currentTime + i / 2 + 1 / 2 * k/(notes.length + 1));
+         }
+      }
+   }
+   scale = teoria.note('c4').scale('majorpentatonic').notes();
+   for (var i = 0; i < score.length; i++) {
+      var noteNums = getNotes(score[i], 62, 74);
+      // var oscillator = audioContext.createOscillator();
+      // oscillator.connect(gain);
+      // var note = scale[noteNums[0]];
+      // if (!note) {
+      //    continue;
+      // }
+      // oscillator.frequency.value = note.fq();
+      // oscillator.start(currentTime + i / 2);
+      // oscillator.stop(currentTime + (i+1)/2);
+      var note = deSharp(scale[noteNums[0] % scale.length]);
+      var buffer = audioBuffers[note.toString()];
+      //playSound(buffer, currentTime + i / 3);
+   }
+}
+
+function deSharp(note) {
+   if (note == null) {
+      return null;
+   }
+   if (note.toString().indexOf('#') >= 0) {
+      return note.enharmonics(true)[0];
+   }
+   return note;
+}
+
+function getNoteNumbers(arr, from, to) {
+   var notes = [];
+   var acc = 0;
+   for (var i = from; i <= to; i++) {
+      if (arr[i] === 1) {
+         acc++;
+      } else {
+         if (acc > 0) {
+            notes.push(acc);
+         }
+         acc = 0;
+      }
+   }
+   if (acc > 0) {
+      notes.push(acc);
+   }
+   return notes;
+}
+
+var audioContext = new AudioContext();
+var audioBuffers = null;
+
+var client = new XMLHttpRequest();
+client.open('GET', 'grand-piano.json');
+client.send();
+client.addEventListener('load', function() {
+   var noteSpecs = JSON.parse(this.response);
+   var loadFns = _.map(noteSpecs, function(value, key) {
+      return loadNote.bind(window, {name: key, dataUri: value});
+   });
+   async.parallel(loadFns, function(err, results) {
+      audioBuffers = _.reduce(results, function(acc, result) {
+         acc[result.name] = result.audioBuffer;
+         return acc;
+      }, {});
+      playMusic();
+      return;
+      var scale = teoria.note('a3').scale('majorpentatonic').notes();
+      var score = [];
+      for (var i = 0; i < 100; i++) {
+         score.push(Math.floor(Math.random() * (scale.length + 1)) - 1);
+         //score.push(Math.floor(Math.random() * 6 - 3))
+      }
+      var count = 100;
+      var currentTime = audioContext.currentTime;
+      for (var i = 0; i < score.length; i++) {
+         count += score[i];
+         if (count < 0 || count > 200) {
+            count = 100;
+         }
+         //var note = scale[count % scale.length];
+         if (score[i] == -1) {
+            continue;
+         }
+         var note = scale[score[i]];
+         if (note.toString().indexOf('#') >= 0) {
+            note = note.enharmonics(true)[0];
+         }
+         var buffer = audioBuffers[note.toString()];
+         playSound(buffer, currentTime + i / 6);
+
+         if (i % 16 == 0) {
+            note = teoria.note(note.name() + (note.octave() - 1));
+            buffer = audioBuffers[note.toString()];
+            playSound(buffer, currentTime + i / 6);
+         }
+      }
+   });
+});
+
+function playSound(buffer, time) {
+   var source = audioContext.createBufferSource();
+   source.buffer = buffer;
+   source.connect(audioContext.destination);
+   source.start(time);
+}
+
+function loadNote(noteSpec, cb) {
+   var sData = atob(noteSpec.dataUri.split(',')[1]);
+   var length = sData.length;
+   var arrBuff = new ArrayBuffer(length);
+   var intWrap = new Uint8Array(arrBuff);
+   for (var i = 0; i < length; i++) {
+      intWrap[i] = sData.charCodeAt(i);
+   }
+
+   audioContext.decodeAudioData(arrBuff, function(buffer) {
+      cb(null, {name: noteSpec.name, audioBuffer: buffer});
+   });
+}
+      </script>
+   </body>
+</html>
