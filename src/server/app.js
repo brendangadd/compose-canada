@@ -13,6 +13,7 @@ let sources = {
    'Quebec': 'sdflknsdlkfj', // Ehn
    'New Brunswick': 'nno soup for you', // High blues scale
    'Nova Scotia': 'Super sayan 3', // Two notes... what the hell?
+   'Prince Edward Island': 'Prince Edward Island',
    'Newfoundland  & Labrador': 'Newfoundland  & Labrador',
    'Yukon Territory': 'It is raining.', // Nice major pentatonic
    'Northwest Territories': 'Rain is happy?', // Repetitive, suspense

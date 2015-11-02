@@ -4,6 +4,12 @@ if (typeof window.audioContext === 'undefined') {
    window.audioContext = new AudioContext();
 }
 
+music.analyser = window.audioContext.createAnalyser();
+music.analyser.fftSize = 32;
+music.analyser.connect(window.audioContext.destination);
+
+music.bufferSources = [];
+
 music.playSong = function(songSpec) {
    var bps = songSpec.bps;
    var score = cellularAutomata.generateRows(
@@ -51,11 +57,19 @@ music.playSong = function(songSpec) {
    return score;
 };
 
+music.stop = function() {
+   music.bufferSources.forEach(function(source) {
+      source.disconnect();
+   });
+   music.bufferSources = [];
+}
+
 music.playSound = function(buffer, time) {
    var source = window.audioContext.createBufferSource();
    source.buffer = buffer;
-   source.connect(window.audioContext.destination);
+   source.connect(music.analyser);
    source.start(time);
+   music.bufferSources.push(source);
 };
 
 music.numbersToNotes = function(numbers, scale) {
