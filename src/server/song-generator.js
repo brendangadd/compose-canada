@@ -1,7 +1,6 @@
 'use strict';
 
 const crypto = require('crypto');
-const got = require('got');
 const teoria = require('teoria');
 
 const SCALES = [
@@ -72,7 +71,3 @@ function stringToBinaryArray(str, length) {
 function generateScale(seed) {
    return SCALES[seed % SCALES.length];
 }
-
-got('http://www.google.ca', (err, body, response) => {
-
-});

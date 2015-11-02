@@ -2,8 +2,12 @@
 <html>
    <head>
       <meta charset="utf-8"/>
-      <title>Sounds</title>
+      <title>Compose Canada</title>
+
+      <link rel="icon" type="image/png" href="favicon.png"/>
+
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto"/>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css"/>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css"/>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.css"/>
@@ -11,10 +15,13 @@
    </head>
    <body>
       <nav class="navbar navbar-inverse navbar-fixed-top">
-         <div class="container">
+         <div class="container-fluid">
             <div class="navbar-header">
                <a class="navbar-brand" href="" style="text-transform: uppercase;">Compose Canada</a>
             </div>
+            <ul class="nav navbar-nav navbar-right">
+               <li><a href="#"><i class="fa fa-lg fa-github"></i>&nbsp;&nbsp;Source on GitHub</a></li>
+            </ul>
          </div>
       </nav>
 
@@ -22,14 +29,14 @@
       <canvas id="canvas" width="300" height="300"></canvas>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"></script>
-      <script src="teoria.js"></script>
-      <script src="async.js"></script>
+      <script src="bower_components/async/dist/async.min.js"></script>
+      <script src="bower_components/teoria/teoria.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.js"></script>
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBluThzqCNseiwB3lqeDaIIgGkO8wtgN78"></script>
 
-      <script src="cellular-automata.js"></script>
-      <script src="music.js"></script>
-      <script src="main.js"></script>
+      <script src="js/cellular-automata.js"></script>
+      <script src="js/music.js"></script>
+      <script src="js/main.js"></script>
    </body>
 </html>

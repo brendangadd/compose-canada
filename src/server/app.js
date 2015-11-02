@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const http = require('http');
 const songGenerator = require('./song-generator');
 const url = require('url');
@@ -20,17 +21,16 @@ let sources = {
    'Nunavut': 'Nunavut'
 };
 
-http.createServer(function(request, response) {
+let specs = _.reduce(sources, (memo, value, key) => {
+   memo[key] = songGenerator.createSong(value);
+   return memo;
+}, {});
+
+http.createServer((request, response) => {
    let parseResult = url.parse(request.url, true);
    let region = parseResult.query.region || 'Ontario';
-   console.log(region);
-   let songSpec = songGenerator.createSong(sources[region]);
+   let spec = specs[region];
+
    response.writeHead(200, {'Content-Type': 'application/json'});
-   response.end(JSON.stringify(songSpec));
-   try {
-      songSpec.seed = songSpec.seed.join('');
-   } catch (e) {
-      console.log(e);
-   }
-   console.log(songSpec);
+   response.end(JSON.stringify(specs[region]));
 }).listen(3000, '127.0.0.1');

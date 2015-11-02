@@ -18,6 +18,13 @@
   "homepage": "https://github.com/brendangadd/compose-canada#readme",
   "dependencies": {
     "got": "^5.0.0",
+    "lodash": "^3.10.1",
     "teoria": "^2.1.1"
+  },
+  "devDependencies": {
+    "del": "^2.0.2",
+    "gulp": "^3.9.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.4.2"
   }
 }

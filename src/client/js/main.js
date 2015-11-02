@@ -89,13 +89,11 @@ function initMap() {
       zoom: 4,
       styles: [{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#444444"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#4f595d"},{"visibility":"on"}]}]
    });
-   var nw = new google.maps.LatLng(74.537117, -143.034124);
-   var se = new google.maps.LatLng(41.028636, -49.870067);
-   var sw = new google.maps.LatLng(41, -143);
-   var ne = new google.maps.LatLng(70, -50);
-   map.fitBounds(new google.maps.LatLngBounds(sw, ne));
+   // var sw = new google.maps.LatLng(41, -143);
+   // var ne = new google.maps.LatLng(70, -50);
+   // map.fitBounds(new google.maps.LatLngBounds(sw, ne));
 
-   map.data.loadGeoJson('canada.geo.json');
+   map.data.loadGeoJson('resources/canada.geo.json');
    map.data.setStyle({
       fillColor: FEATURE_FILL_COLOR,
       strokeColor: FEATURE_STROKE_COLOR
@@ -158,7 +156,7 @@ function loadSongSpec(region, cb) {
 
 function loadSounds(cb) {
    var client = new XMLHttpRequest();
-   client.open('GET', 'grand-piano.json');
+   client.open('GET', 'resources/grand-piano.json');
    client.send();
    client.addEventListener('load', function() {
       var noteSpecs = JSON.parse(this.response);

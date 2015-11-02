@@ -1,0 +1,22 @@
+{
+  "name": "compose-canada",
+  "description": "The sound of everyday life",
+  "main": "",
+  "authors": [
+    "Brendan Gadd"
+  ],
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/brendangadd/compose-canada",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "teoria": "~2.1.1",
+    "async": "~1.5.0"
+  }
+}
